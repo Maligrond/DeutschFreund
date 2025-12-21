@@ -849,228 +849,232 @@ async def handle_text_message(message: Message) -> None:
     Основной обработчик текстовых сообщений.
     Отправляет в Gemini и сохраняет историю.
     """
-    user = message.from_user
-    text = message.text
-    
-    if not user or not text:
-        return
-    
-    # Пропускаем команды (на всякий случай)
-    if text.startswith("/"):
-        return
-    
-    async with get_session_context() as session:
-        # Получаем или создаём пользователя
-        db_user = await session.get(User, user.id)
+    try:
+        user = message.from_user
+        text = message.text
         
-        if not db_user:
-            db_user = User(
-                user_id=user.id,
-                username=user.username,
-                first_name=user.first_name,
-                level="A2",
-                created_at=datetime.now(timezone.utc),
-                updated_at=datetime.now(timezone.utc),
+        if not user or not text:
+            return
+        
+        # Пропускаем команды (на всякий случай)
+        if text.startswith("/"):
+            return
+        
+        async with get_session_context() as session:
+            # Получаем или создаём пользователя
+            db_user = await session.get(User, user.id)
+            
+            if not db_user:
+                db_user = User(
+                    user_id=user.id,
+                    username=user.username,
+                    first_name=user.first_name,
+                    level="A2",
+                    created_at=datetime.now(timezone.utc),
+                    updated_at=datetime.now(timezone.utc),
+                )
+                session.add(db_user)
+                await session.flush()
+            
+            
+            # Начисляем XP за сообщение (активность)
+            XP_PER_MESSAGE = 5
+            db_user.total_xp += XP_PER_MESSAGE
+            
+            # Обновляем streak
+            from .streak_service import update_streak
+            await update_streak(session, db_user)
+            
+            # Загружаем контекст пользователя
+            user_context_db = await session.get(UserContext, user.id)
+            user_context = user_context_db.context_data if user_context_db else None
+            
+            # Загружаем последние сообщения для истории
+            history_result = await session.execute(
+                select(DBMessage)
+                .where(DBMessage.user_id == user.id)
+                .order_by(DBMessage.created_at.desc())
+                .limit(20)
             )
-            session.add(db_user)
-            await session.flush()
-        
-        
-        # Начисляем XP за сообщение (активность)
-        XP_PER_MESSAGE = 5
-        db_user.total_xp += XP_PER_MESSAGE
-        
-        # Обновляем streak
-        from .streak_service import update_streak
-        await update_streak(session, db_user)
-        
-        # Загружаем контекст пользователя
-        user_context_db = await session.get(UserContext, user.id)
-        user_context = user_context_db.context_data if user_context_db else None
-        
-        # Загружаем последние сообщения для истории
-        history_result = await session.execute(
-            select(DBMessage)
-            .where(DBMessage.user_id == user.id)
-            .order_by(DBMessage.created_at.desc())
-            .limit(20)
-        )
-        history_messages = list(reversed(history_result.scalars().all()))
-        
-        history = [
-            ChatMessage(role=msg.role, content=msg.content)
-            for msg in history_messages
-        ]
-        
-        # Показываем "печатает..."
-        await message.bot.send_chat_action(message.chat.id, "typing")
-        
-        try:
-            # Отправляем в Gemini
-            gemini = get_gemini_client()
-            response = await gemini.send_message(
-                user_id=user.id,
-                message=text,
-                user_level=db_user.level,
-                user_goal=db_user.goal,
-                personality=db_user.bot_personality,
-                user_context=user_context,
-                history=history,
-            )
+            history_messages = list(reversed(history_result.scalars().all()))
             
-            now = datetime.now(timezone.utc)
+            history = [
+                ChatMessage(role=msg.role, content=msg.content)
+                for msg in history_messages
+            ]
             
-            # Сохраняем сообщение пользователя
-            user_msg = DBMessage(
-                user_id=user.id,
-                role="user",
-                content=text,
-                created_at=now,
-            )
-            session.add(user_msg)
+            # Показываем "печатает..."
+            await message.bot.send_chat_action(message.chat.id, "typing")
             
-            # Сохраняем ответ бота
-            assistant_msg = DBMessage(
-                user_id=user.id,
-                role="assistant",
-                content=response.text,
-                tokens_used=response.tokens_used,
-                created_at=now,
-            )
-            session.add(assistant_msg)
-            
-            # Flush чтобы получить ID сообщения для интерактивной кнопки
-            await session.flush()
-            await session.refresh(assistant_msg)
-            message_id = assistant_msg.id
-            
-            # Обновляем daily messages и статистику
-            db_user.total_messages += 1
-            db_user.last_message_date = now
-            db_user.updated_at = now
-            
-            # Обновляем streak через новый сервис
-            await increment_daily_messages(session, db_user)
-            streak_result = await check_and_update_streak(session, db_user)
-            
-            await session.commit()
-            
-            # Отправляем уведомление о milestone если достигнут
-            if streak_result.get("milestone_reached"):
-                milestone_msg = format_milestone_message(streak_result["reward"])
-                await message.answer(milestone_msg, parse_mode=ParseMode.MARKDOWN)
-            
-            # Отправляем ответ с кнопкой для интерактивного текста
             try:
-                await message.answer(
-                    response.text,
-                    reply_markup=get_text_keyboard(message_id),
-                    parse_mode=ParseMode.MARKDOWN
+                # Отправляем в Gemini
+                gemini = get_gemini_client()
+                response = await gemini.send_message(
+                    user_id=user.id,
+                    message=text,
+                    user_level=db_user.level,
+                    user_goal=db_user.goal,
+                    personality=db_user.bot_personality,
+                    user_context=user_context,
+                    history=history,
                 )
-            except Exception as markdown_error:
-                # Fallback: отправляем без форматирования если markdown невалидный
-                logger.warning("Markdown parse error, sending without formatting: %s", str(markdown_error))
-                await message.answer(
-                    response.text,
-                    reply_markup=get_text_keyboard(message_id)
+                
+                now = datetime.now(timezone.utc)
+                
+                # Сохраняем сообщение пользователя
+                user_msg = DBMessage(
+                    user_id=user.id,
+                    role="user",
+                    content=text,
+                    created_at=now,
                 )
-            
-            logger.info(
-                "Message processed for user %d: %d chars → %d chars (msg_id=%d)",
-                user.id, len(text), len(response.text), message_id
-            )
-            
-            # ===== ПРОВЕРКА ТРИГГЕРА ГРАММАТИЧЕСКОГО УПРАЖНЕНИЯ =====
-            # Увеличиваем счётчик сообщений
-            db_user.grammar_message_counter += 1
-            
-            # Проверяем нужно ли показать упражнение
-            is_question = is_user_asking_question(text)
-            if should_trigger_exercise(db_user, is_user_question=is_question):
+                session.add(user_msg)
+                
+                # Сохраняем ответ бота
+                assistant_msg = DBMessage(
+                    user_id=user.id,
+                    role="assistant",
+                    content=response.text,
+                    tokens_used=response.tokens_used,
+                    created_at=now,
+                )
+                session.add(assistant_msg)
+                
+                # Flush чтобы получить ID сообщения для интерактивной кнопки
+                await session.flush()
+                await session.refresh(assistant_msg)
+                message_id = assistant_msg.id
+                
+                # Обновляем daily messages и статистику
+                db_user.total_messages += 1
+                db_user.last_message_date = now
+                db_user.updated_at = now
+                
+                # Обновляем streak через новый сервис
+                await increment_daily_messages(session, db_user)
+                streak_result = await check_and_update_streak(session, db_user)
+                
+                await session.commit()
+                
+                # Отправляем уведомление о milestone если достигнут
+                if streak_result.get("milestone_reached"):
+                    milestone_msg = format_milestone_message(streak_result["reward"])
+                    await message.answer(milestone_msg, parse_mode=ParseMode.MARKDOWN)
+                
+                # Отправляем ответ с кнопкой для интерактивного текста
                 try:
-                    # Выбираем тему
-                    topic = await choose_topic(session, user.id, text, is_premium=False)
-                    
-                    # Генерируем упражнение
-                    exercise_data = await gemini.generate_grammar_exercise(
-                        context_phrase=text,
-                        topic=topic,
-                        user_level=db_user.level,
-                    )
-                    
-                    # Сохраняем упражнение в БД
-                    exercise = GrammarExercise(
-                        user_id=user.id,
-                        topic=exercise_data["topic"],
-                        question=exercise_data["question"],
-                        option_a=exercise_data["option_a"],
-                        option_b=exercise_data["option_b"],
-                        option_c=exercise_data["option_c"],
-                        correct_answer=exercise_data["correct"],
-                        rule_explanation=exercise_data["rule"],
-                        context_phrase=text,
-                        follow_up_message=exercise_data.get("follow_up"),
-                    )
-                    session.add(exercise)
-                    await session.flush()
-                    await session.refresh(exercise)
-                    
-                    # Обновляем время последнего упражнения и сбрасываем счётчик
-                    db_user.last_grammar_exercise = datetime.now(timezone.utc)
-                    db_user.grammar_message_counter = 0
-                    await session.commit()
-                    
-                    # Формируем сообщение с упражнением
-                    exercise_text = (
-                        f"📝 *Übrigens, schnelle Frage!*\n\n"
-                        f"{exercise_data['question']}\n\n"
-                        f"A) {exercise_data['option_a']}\n"
-                        f"B) {exercise_data['option_b']}\n"
-                        f"C) {exercise_data['option_c']}"
-                    )
-                    
-                    # Кнопки ответов
-                    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-                        [
-                            InlineKeyboardButton(
-                                text="A",
-                                callback_data=f"grammar:{exercise.id}:A"
-                            ),
-                            InlineKeyboardButton(
-                                text="B",
-                                callback_data=f"grammar:{exercise.id}:B"
-                            ),
-                            InlineKeyboardButton(
-                                text="C",
-                                callback_data=f"grammar:{exercise.id}:C"
-                            ),
-                        ]
-                    ])
-                    
                     await message.answer(
-                        exercise_text,
-                        reply_markup=keyboard,
+                        response.text,
+                        reply_markup=get_text_keyboard(message_id),
                         parse_mode=ParseMode.MARKDOWN
                     )
-                    
-                    logger.info(
-                        "Grammar exercise sent to user %d: topic=%s, id=%d",
-                        user.id, topic, exercise.id
+                except Exception as markdown_error:
+                    # Fallback: отправляем без форматирования если markdown невалидный
+                    logger.warning("Markdown parse error, sending without formatting: %s", str(markdown_error))
+                    await message.answer(
+                        response.text,
+                        reply_markup=get_text_keyboard(message_id)
                     )
-                    
-                except Exception as ex:
-                    logger.error("Error generating grammar exercise for user %d: %s", user.id, str(ex))
-                    # Не прерываем основной флоу если не удалось сгенерировать упражнение
-            else:
-                await session.commit()
-            
-        except Exception as e:
-            logger.error("Error processing message for user %d: %s", user.id, str(e))
-            
-            await message.answer(
-                "😔 Упс, что-то пошло не так. Попробуй ещё раз!\n\n"
-                "Если ошибка повторяется, напиши /clear"
-            )
+                
+                logger.info(
+                    "Message processed for user %d: %d chars → %d chars (msg_id=%d)",
+                    user.id, len(text), len(response.text), message_id
+                )
+                
+                # ===== ПРОВЕРКА ТРИГГЕРА ГРАММАТИЧЕСКОГО УПРАЖНЕНИЯ =====
+                # Увеличиваем счётчик сообщений
+                db_user.grammar_message_counter += 1
+                
+                # Проверяем нужно ли показать упражнение
+                is_question = is_user_asking_question(text)
+                if should_trigger_exercise(db_user, is_user_question=is_question):
+                    try:
+                        # Выбираем тему
+                        topic = await choose_topic(session, user.id, text, is_premium=False)
+                        
+                        # Генерируем упражнение
+                        exercise_data = await gemini.generate_grammar_exercise(
+                            context_phrase=text,
+                            topic=topic,
+                            user_level=db_user.level,
+                        )
+                        
+                        # Сохраняем упражнение в БД
+                        exercise = GrammarExercise(
+                            user_id=user.id,
+                            topic=exercise_data["topic"],
+                            question=exercise_data["question"],
+                            option_a=exercise_data["option_a"],
+                            option_b=exercise_data["option_b"],
+                            option_c=exercise_data["option_c"],
+                            correct_answer=exercise_data["correct"],
+                            rule_explanation=exercise_data["rule"],
+                            context_phrase=text,
+                            follow_up_message=exercise_data.get("follow_up"),
+                        )
+                        session.add(exercise)
+                        await session.flush()
+                        await session.refresh(exercise)
+                        
+                        # Обновляем время последнего упражнения и сбрасываем счётчик
+                        db_user.last_grammar_exercise = datetime.now(timezone.utc)
+                        db_user.grammar_message_counter = 0
+                        await session.commit()
+                        
+                        # Формируем сообщение с упражнением
+                        exercise_text = (
+                            f"📝 *Übrigens, schnelle Frage!*\n\n"
+                            f"{exercise_data['question']}\n\n"
+                            f"A) {exercise_data['option_a']}\n"
+                            f"B) {exercise_data['option_b']}\n"
+                            f"C) {exercise_data['option_c']}"
+                        )
+                        
+                        # Кнопки ответов
+                        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                            [
+                                InlineKeyboardButton(
+                                    text="A",
+                                    callback_data=f"grammar:{exercise.id}:A"
+                                ),
+                                InlineKeyboardButton(
+                                    text="B",
+                                    callback_data=f"grammar:{exercise.id}:B"
+                                ),
+                                InlineKeyboardButton(
+                                    text="C",
+                                    callback_data=f"grammar:{exercise.id}:C"
+                                ),
+                            ]
+                        ])
+                        
+                        await message.answer(
+                            exercise_text,
+                            reply_markup=keyboard,
+                            parse_mode=ParseMode.MARKDOWN
+                        )
+                        
+                        logger.info(
+                            "Grammar exercise sent to user %d: topic=%s, id=%d",
+                            user.id, topic, exercise.id
+                        )
+                        
+                    except Exception as ex:
+                        logger.error("Error generating grammar exercise for user %d: %s", user.id, str(ex))
+                        # Не прерываем основной флоу если не удалось сгенерировать упражнение
+                else:
+                    await session.commit()
+                
+            except Exception as e:
+                logger.error("Error processing message for user %d: %s", user.id, str(e))
+                
+                await message.answer(
+                    "😔 Упс, что-то пошло не так. Попробуй ещё раз!\n\n"
+                    "Если ошибка повторяется, напиши /clear"
+                )
+    except Exception as e:
+        import traceback
+        await message.answer(f"⚠️ <b>Fatal Error in Chat:</b> {str(e)}\n<pre>{traceback.format_exc()}</pre>", parse_mode=ParseMode.HTML)
 
 
 @router.message(F.voice)
