@@ -14,7 +14,7 @@ router = APIRouter(tags=["Telegram Webhook"])
 
 # Инициализация бота для Webhook
 # Важно: создаём объекты тут, но лучше вынести в зависимость
-bot = Bot(token=settings.telegram_token)
+bot = Bot(token=settings.telegram_bot_token)
 dp = Dispatcher(storage=MemoryStorage()) # В serverless лучше использовать RedisStorage, но пока Memory
 dp.include_router(bot_router)
 dp.include_router(placement_router)

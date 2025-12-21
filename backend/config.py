@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     """Настройки приложения."""
     
     # Telegram
-    telegram_bot_token: str = Field(..., description="Telegram Bot Token")
+    telegram_bot_token: str = Field(..., description="Telegram Bot Token", validation_alias="TELEGRAM_TOKEN")
     
     # Google AI
     google_api_key: str = Field(..., description="Google AI API Key")
