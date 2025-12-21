@@ -26,9 +26,14 @@ import os
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
-    # SQLite для локальной разработки
-    DB_PATH = Path(__file__).parent.parent / "data" / "germanbuddy.db"
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    # SQLite для локальной разработки (или fallback)
+    try:
+        DB_PATH = Path(__file__).parent.parent / "data" / "germanbuddy.db"
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        # Fallback для Read-Only файловых систем (например, Vercel без DATABASE_URL)
+        DB_PATH = Path("/tmp/germanbuddy.db")
+    
     DATABASE_URL = f"sqlite+aiosqlite:///{DB_PATH}"
 
 # Fix for Vercel/Neon which provides postgres:// but SQLAlchemy needs postgresql+asyncpg://
