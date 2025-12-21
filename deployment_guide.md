@@ -1,68 +1,31 @@
-# 🚀 Free Hosting Guide for GermanBuddy
+## Step 3: Deploy to Vercel (Frontend + Backend)
 
-Here is how to host your app completely for free using modern cloud providers.
-
-## Stack Overview
-- **Database**: **Neon.tech** (Free Serverless PostgreSQL).
-- **Backend (API + Bot)**: **Render.com** (Free Web Service).
-- **Frontend**: **Vercel** (Free Static Hosting).
-
----
-
-## Step 1: Database (Neon.tech)
-1. Go to [neon.tech](https://neon.tech) and sign up.
-2. Create a new project.
-3. Copy the **ConnectionString** (Postgres URL). It looks like `postgres://user:pass@ep-xyz.aws.neon.tech/neondb`.
-   > ⚠️ **Important**: For Python/SQLAlchemy, you need to change `postgres://` to `postgresql+asyncpg://` in the URL later.
+1. **Commit & Push**: Push your changes to GitHub (`git push`).
+2. Go to **[vercel.com](https://vercel.com)** -> Add New Project -> Import `deutschfreund`.
+3. **Project Settings**:
+   - **Root Directory**: Leave it empty (`./`). **Do NOT select 'frontend' anymore.**
+   - *Why?* We are now deploying the whole app (Backend + Frontend) together!
+4. **Environment Variables**:
+   Add the following variables (you can get them from Neon.tech and Telegram):
+   - `DATABASE_URL`: `postgresql+asyncpg://...` (From Neon, change `postgres://` to `postgresql+asyncpg://`)
+   - `TELEGRAM_TOKEN`: Your Bot Token from BotFather.
+   - `WEBHOOK_SECRET`: A random string (e.g., `mysecret123`).
+   - `GOOGLE_API_KEY`: Your Gemini API Key.
+5. Click **Deploy**.
 
 ---
 
-## Step 2: Backend (Render.com)
-1. Push your code to a **GitHub repository**.
-2. Go to [render.com](https://render.com) -> New **Web Service**.
-3. Connect your GitHub repo.
-4. Settings:
-   - **Root Directory**: `backend` (this is important!)
-   - **Runtime**: Docker
-   - **Instance Type**: Free
-   - **Environment Variables**:
-     - `DATABASE_URL`: Your Neon URL (change `postgres://` to `postgresql+asyncpg://`).
-     - `TELEGRAM_TOKEN`: Your bot token.
-     - `GEMINI_API_KEY`: Your key.
-     - `WEBAPP_URL`: *You will fill this later after Frontend deploy.*
-5. Click **Create Web Service**.
+## Step 4: Final Setup (Webhook)
 
----
+Since Vercel puts the bot to sleep when not used, we can't use "Polling". We must use **Webhooks**.
 
-## Step 3: Frontend (Vercel) - The Easiest Way
+1. Wait for deployment to finish. Copy your Vercel Domain (e.g., `https://deutschfreund.vercel.app`).
+2. Open your browser and visit this URL to set the webhook:
+   ```
+   https://YOUR_DOMAIN.vercel.app/api/webhook/set?url=https://YOUR_DOMAIN.vercel.app/api/webhook/telegram
+   ```
+3. You should see `{"status":"ok", ...}`.
+4. **Done!** Your bot is now live on Vercel.
 
-1. **Commit & Push**: Make sure you have pushed all your latest code to GitHub first!
-2. Go to **[vercel.com/new](https://vercel.com/new)**.
-3. You should see your `deutschfreund` repository. Click **Import**.
-4. **⚠️ CRITICAL STEP: Configure Project**
-   - You will see a box that says **"Root Directory"**.
-   - Click **Edit**.
-   - Select the folder named **`frontend`** and click **Continue**.
-   - *Why?* Because your website code lives inside the `frontend` folder, not at the top level.
-5. **Framework Preset**:
-   - Once you select the `frontend` folder, Vercel should automatically detect **Vite**.
-   - If not, select **Vite** from the dropdown menu.
-6. **Environment Variables** (Optional for now, but recommended):
-   - Expand "Environment Variables".
-   - Key: `VITE_API_URL`
-   - Value: Your backend URL (e.g., `https://your-app.onrender.com`).
-   - *Note: You can add this later in Settings if you don't have it yet.*
-7. Click **Deploy**.
-8. Wait ~1 minute. You should see fireworks! 🎆
-   - If you see a 404 error, it usually means step 4 was skipped.
+> **Note**: The frontend will be at `https://deutschfreund.vercel.app` and the API at `https://deutschfreund.vercel.app/api/...`.
 
----
-
-## Step 4: Final Config
-1. Go back to Render -> Environment Variables.
-2. Set `WEBAPP_URL` to your Vercel domain (`https://germanbuddy.vercel.app`).
-3. Go to **BotFather** in Telegram.
-4. Send `/newapp` -> Select bot -> Send Vercel URL.
-5. In BotFather Menu Button config, also set the Vercel URL.
-
-**Done!** 🎉

@@ -2,6 +2,10 @@
     "version": 2,
     "builds": [
         {
+            "src": "backend/api/index.py",
+            "use": "@vercel/python"
+        },
+        {
             "src": "frontend/package.json",
             "use": "@vercel/static-build",
             "config": {
@@ -11,11 +15,26 @@
     ],
     "routes": [
         {
+            "src": "/api/(.*)",
+            "dest": "backend/api/index.py"
+        },
+        {
+            "src": "/docs",
+            "dest": "backend/api/index.py"
+        },
+        {
+            "src": "/openapi.json",
+            "dest": "backend/api/index.py"
+        },
+        {
             "handle": "filesystem"
         },
         {
             "src": "/(.*)",
             "dest": "/index.html"
         }
-    ]
+    ],
+    "env": {
+        "PYTHONPATH": "backend"
+    }
 }
