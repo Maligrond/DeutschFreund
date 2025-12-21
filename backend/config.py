@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     
     # API / Mini App URL
     api_base_url: str = Field(
-        default="https://epirogenic-orthostichous-murray.ngrok-free.dev",
+        default="",
         description="Base URL for Mini App (must be HTTPS for Telegram)"
     )
     

@@ -117,7 +117,7 @@ export interface UpdateResponse {
 }
 
 export function useApi() {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    const API_URL = import.meta.env.VITE_API_URL || ''
 
     const loading = ref(false)
     const error = ref<string | null>(null)
