@@ -108,30 +108,31 @@ async def cmd_start(message: Message) -> None:
     Обработка команды /start.
     Регистрация пользователя и приветствие.
     """
-    user = message.from_user
-    if not user:
-        return
-    
-    async with get_session_context() as session:
-        # Проверяем существующего пользователя
-        db_user = await session.get(User, user.id)
+    try:
+        user = message.from_user
+        if not user:
+            return
         
-        if not db_user:
-            # Создаём нового пользователя
-            db_user = User(
-                user_id=user.id,
-                username=user.username,
-                first_name=user.first_name,
-                level="A2",
-                created_at=datetime.now(timezone.utc),
-                updated_at=datetime.now(timezone.utc),
-            )
-            session.add(db_user)
-            await session.commit()
-            logger.info("New user registered: %d (%s)", user.id, user.first_name)
-        
-        # Приветственное сообщение
-        welcome_text = """Привет! Я Макс, твой языковой друг 🇩🇪
+        async with get_session_context() as session:
+            # Проверяем существующего пользователя
+            db_user = await session.get(User, user.id)
+            
+            if not db_user:
+                # Создаём нового пользователя
+                db_user = User(
+                    user_id=user.id,
+                    username=user.username,
+                    first_name=user.first_name,
+                    level="A2",
+                    created_at=datetime.now(timezone.utc),
+                    updated_at=datetime.now(timezone.utc),
+                )
+                session.add(db_user)
+                await session.commit()
+                logger.info("New user registered: %d (%s)", user.id, user.first_name)
+            
+            # Приветственное сообщение
+            welcome_text = """Привет! Я Макс, твой языковой друг 🇩🇪
 
 Я помогу тебе выучить немецкий через простое общение.
 
@@ -143,31 +144,34 @@ async def cmd_start(message: Message) -> None:
 <b>С чего начнем?</b>
 Рекомендую пройти быстрый тест, чтобы я подобрал программу под твой уровнь! 👇"""
 
-        # Клавиатура с кнопкой теста
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="🚀 Пройти тест (в чате)",
-                    callback_data="start_test_chat"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="📊 Моя статистика",
-                    web_app=WebAppInfo(url=f"{MINI_APP_URL}/stats")
-                ),
-                InlineKeyboardButton(
-                    text="⚙️ Настройки",
-                    web_app=WebAppInfo(url=f"{MINI_APP_URL}/settings")
-                ),
-            ],
-        ])
+            # Клавиатура с кнопкой теста
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="🚀 Пройти тест (в чате)",
+                        callback_data="start_test_chat"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="📊 Моя статистика",
+                        web_app=WebAppInfo(url=f"{MINI_APP_URL}/stats")
+                    ),
+                    InlineKeyboardButton(
+                        text="⚙️ Настройки",
+                        web_app=WebAppInfo(url=f"{MINI_APP_URL}/settings")
+                    ),
+                ],
+            ])
 
-        await message.answer(
-            welcome_text,
-            reply_markup=keyboard,
-            parse_mode=ParseMode.HTML
-        )
+            await message.answer(
+                welcome_text,
+                reply_markup=keyboard,
+                parse_mode=ParseMode.HTML
+            )
+    except Exception as e:
+        import traceback
+        await message.answer(f"⚠️ <b>Fatal Error:</b> {str(e)}\n<pre>{traceback.format_exc()}</pre>", parse_mode=ParseMode.HTML)
 
 
 @router.message(Command("help"))
