@@ -34,16 +34,27 @@ Here is how to host your app completely for free using modern cloud providers.
 
 ---
 
-## Step 3: Frontend (Vercel)
-1. Go to [vercel.com](https://vercel.com) -> Add New Project.
-2. Import the same GitHub repo.
-3. Settings:
-   - **Root Directory**: `frontend` (Edit -> select `frontend` folder).
-   - **Framework Preset**: Vite (should contain `npm run build`).
-4. **Environment Variables**:
-   - `VITE_API_URL`: The URL of your Render backend (e.g., `https://germanbuddy.onrender.com`).
-5. Click **Deploy**.
-6. Copy the resulting domain (e.g., `https://germanbuddy.vercel.app`).
+## Step 3: Frontend (Vercel) - The Easiest Way
+
+1. **Commit & Push**: Make sure you have pushed all your latest code to GitHub first!
+2. Go to **[vercel.com/new](https://vercel.com/new)**.
+3. You should see your `deutschfreund` repository. Click **Import**.
+4. **⚠️ CRITICAL STEP: Configure Project**
+   - You will see a box that says **"Root Directory"**.
+   - Click **Edit**.
+   - Select the folder named **`frontend`** and click **Continue**.
+   - *Why?* Because your website code lives inside the `frontend` folder, not at the top level.
+5. **Framework Preset**:
+   - Once you select the `frontend` folder, Vercel should automatically detect **Vite**.
+   - If not, select **Vite** from the dropdown menu.
+6. **Environment Variables** (Optional for now, but recommended):
+   - Expand "Environment Variables".
+   - Key: `VITE_API_URL`
+   - Value: Your backend URL (e.g., `https://your-app.onrender.com`).
+   - *Note: You can add this later in Settings if you don't have it yet.*
+7. Click **Deploy**.
+8. Wait ~1 minute. You should see fireworks! 🎆
+   - If you see a 404 error, it usually means step 4 was skipped.
 
 ---
 
