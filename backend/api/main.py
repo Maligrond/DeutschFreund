@@ -12,6 +12,8 @@ from typing import AsyncGenerator
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
+from sqlalchemy import text
+from database.db import get_session
 from fastapi.staticfiles import StaticFiles
 
 from database.db import init_db, close_db
@@ -133,6 +135,17 @@ async def health_check():
         "service": "germanbuddy-api",
         "version": "1.0.0",
     }
+
+@app.get("/debug/db", tags=["System"])
+async def debug_db():
+    """Test database connection."""
+    try:
+        async for session in get_session():
+            await session.execute(text("SELECT 1"))
+            return {"status": "ok", "message": "Database connection successful"}
+    except Exception as e:
+        logger.error(f"DB Connection failed: {e}")
+        return {"status": "error", "message": str(e), "type": type(e).__name__}
 
 
 # ============ FRONTEND STATIC FILES ============
