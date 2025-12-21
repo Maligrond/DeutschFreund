@@ -19,6 +19,7 @@ from sqlalchemy.orm import DeclarativeBase
 logger = logging.getLogger(__name__)
 
 import os
+import urllib.parse
 
 # База данных
 # Если задана переменная DATABASE_URL (например, на Vercel/Render), используем её.
@@ -40,6 +41,25 @@ if not DATABASE_URL:
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://", 1)
 
+# Fix for "TypeError: connect() got an unexpected keyword argument 'sslmode'"
+# asyncpg doesn't support 'sslmode' in URL query params, must be passed in connect_args or as 'ssl' context
+CONNECT_ARGS = {}
+if DATABASE_URL and "sslmode" in DATABASE_URL:
+    try:
+        url_parts = urllib.parse.urlparse(DATABASE_URL)
+        qs = urllib.parse.parse_qs(url_parts.query)
+        # If sslmode is present, remove it from URL and enable SSL in connect_args
+        if 'sslmode' in qs:
+            sslmode_val = qs.pop('sslmode')[0]
+            if sslmode_val == 'require':
+                CONNECT_ARGS['ssl'] = 'require'
+            
+            # Rebuild URL without sslmode
+            new_query = urllib.parse.urlencode(qs, doseq=True)
+            DATABASE_URL = urllib.parse.urlunparse(url_parts._replace(query=new_query))
+    except Exception as e:
+        logger.error(f"Failed to parse or fix DATABASE_URL: {e}")
+
 
 # Engine и Session
 engine: AsyncEngine | None = None
@@ -58,6 +78,7 @@ async def init_db() -> None:
     engine = create_async_engine(
         DATABASE_URL,
         echo=False,
+        connect_args=CONNECT_ARGS,
     )
     
     async_session_factory = async_sessionmaker(
