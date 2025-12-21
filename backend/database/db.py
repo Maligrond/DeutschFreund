@@ -69,7 +69,7 @@ async def init_db() -> None:
         )
         await conn.run_sync(Base.metadata.create_all)
     
-    logger.info("Database initialized: %s", DB_PATH)
+    logger.info("Database initialized.")
 
 
 async def close_db() -> None:
