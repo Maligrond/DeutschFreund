@@ -136,16 +136,7 @@ async def health_check():
         "version": "1.0.0",
     }
 
-@app.get("/api/debug/db", tags=["System"])
-async def debug_db():
-    """Test database connection."""
-    try:
-        async for session in get_session():
-            await session.execute(text("SELECT 1"))
-            return {"status": "ok", "message": "Database connection successful"}
-    except Exception as e:
-        logger.error(f"DB Connection failed: {e}")
-        return {"status": "error", "message": str(e), "type": type(e).__name__}
+
 
 
 # ============ FRONTEND STATIC FILES ============
