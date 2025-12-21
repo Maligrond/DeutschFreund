@@ -30,8 +30,9 @@ class Settings(BaseSettings):
     
     # API / Mini App URL
     api_base_url: str = Field(
-        default="",
-        description="Base URL for Mini App (must be HTTPS for Telegram)"
+        default="https://deutsch-freund.vercel.app",
+        description="Base URL for Mini App (must be HTTPS for Telegram)",
+        validation_alias="WEBAPP_URL"
     )
     
     # App settings
