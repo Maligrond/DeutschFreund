@@ -1,20 +1,23 @@
 {
-    "rewrites": [
+    "routes": [
         {
-            "source": "/api/(.*)",
-            "destination": "/api/index.py"
+            "src": "/api/(.*)",
+            "dest": "/api/index.py"
         },
         {
-            "source": "/docs",
-            "destination": "/api/index.py"
+            "src": "/docs",
+            "dest": "/api/index.py"
         },
         {
-            "source": "/openapi.json",
-            "destination": "/api/index.py"
+            "src": "/openapi.json",
+            "dest": "/api/index.py"
         },
         {
-            "source": "/(.*)",
-            "destination": "/index.html"
+            "handle": "filesystem"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/index.html"
         }
     ],
     "env": {
