@@ -22,6 +22,11 @@ dp.include_router(placement_router)
 # Секрет для защиты вебхука
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "germanbuddy-secret")
 
+@router.get("/webhook/ping")
+async def ping():
+    """Simple connectivity check."""
+    return {"status": "pong", "message": "Webhook router is alive!"}
+
 @router.post("/webhook/telegram")
 async def telegram_webhook(request: Request, background_tasks: BackgroundTasks):
     """
