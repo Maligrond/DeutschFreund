@@ -882,8 +882,7 @@ async def handle_text_message(message: Message) -> None:
             db_user.total_xp += XP_PER_MESSAGE
             
             # Обновляем streak
-            from .streak_service import update_streak
-            await update_streak(session, db_user)
+            # (Streak update logic is handled at the end of function)
             
             # Загружаем контекст пользователя
             user_context_db = await session.get(UserContext, user.id)
