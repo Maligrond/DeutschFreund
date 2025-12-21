@@ -1,0 +1,602 @@
+[
+    {
+        "id": 1,
+        "level": "A1",
+        "question": "Как правильно поздороваться утром?",
+        "options": [
+            "Guten Morgen",
+            "Guten Abend",
+            "Gute Nacht",
+            "Tschüss"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 2,
+        "level": "A1",
+        "question": "Ich ___ Anna (Меня зовут...)",
+        "options": [
+            "bin",
+            "heiße",
+            "ist",
+            "bist"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 3,
+        "level": "A1",
+        "question": "___ Tisch (стол)",
+        "options": [
+            "der",
+            "die",
+            "das",
+            "den"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 4,
+        "level": "A1",
+        "question": "Как спросить 'Сколько это стоит?'",
+        "options": [
+            "Wie viel kostet das?",
+            "Was ist das?",
+            "Wo ist das?",
+            "Wer ist das?"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 5,
+        "level": "A1",
+        "question": "Ich komme ___ Moskau",
+        "options": [
+            "von",
+            "aus",
+            "in",
+            "nach"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 6,
+        "level": "A1",
+        "question": "Числа: zwanzig = ?",
+        "options": [
+            "12",
+            "20",
+            "22",
+            "200"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 7,
+        "level": "A1",
+        "question": "Ich ___ Kaffee (пью)",
+        "options": [
+            "trinke",
+            "esse",
+            "habe",
+            "mache"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 8,
+        "level": "A1",
+        "question": "___ du Deutsch?",
+        "options": [
+            "Sprichst",
+            "Spreche",
+            "Sprecht",
+            "Sprechen"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 9,
+        "level": "A1",
+        "question": "Das ist mein___ Buch",
+        "options": [
+            "-",
+            "-e",
+            "-es",
+            "-en"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 10,
+        "level": "A1",
+        "question": "Wie ___ du? (Как тебя зовут?)",
+        "options": [
+            "heißt",
+            "heißen",
+            "heiße",
+            "heißst"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 11,
+        "level": "A2",
+        "question": "Ich ___ gestern zu Hause",
+        "options": [
+            "bin",
+            "war",
+            "habe",
+            "wurde"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 12,
+        "level": "A2",
+        "question": "Ich habe kein___ Geld",
+        "options": [
+            "-",
+            "-e",
+            "-en",
+            "-es"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 13,
+        "level": "A2",
+        "question": "Ich ___ um 7 Uhr ___ (встаю)",
+        "options": [
+            "aufstehe",
+            "stehe auf",
+            "stehe ... auf",
+            "aufstehen"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 14,
+        "level": "A2",
+        "question": "Wir sind mit ___ Auto gefahren",
+        "options": [
+            "der",
+            "die",
+            "das",
+            "dem"
+        ],
+        "correct_index": 3
+    },
+    {
+        "id": 15,
+        "level": "A2",
+        "question": "Ich habe ___ Film gesehen",
+        "options": [
+            "der",
+            "die",
+            "den",
+            "dem"
+        ],
+        "correct_index": 2
+    },
+    {
+        "id": 16,
+        "level": "A2",
+        "question": "Kannst du mir ___ Buch geben?",
+        "options": [
+            "der",
+            "die",
+            "das",
+            "dem"
+        ],
+        "correct_index": 2
+    },
+    {
+        "id": 17,
+        "level": "A2",
+        "question": "Ich ___ nach Berlin gefahren",
+        "options": [
+            "habe",
+            "bin",
+            "hatte",
+            "war"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 18,
+        "level": "A2",
+        "question": "Er ___ jeden Tag Fußball (играет)",
+        "options": [
+            "spielt",
+            "spielen",
+            "gespielt",
+            "spielte"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 19,
+        "level": "A2",
+        "question": "Ich möchte ___ Arzt werden",
+        "options": [
+            "der",
+            "die",
+            "ein",
+            "-"
+        ],
+        "correct_index": 3
+    },
+    {
+        "id": 20,
+        "level": "A2",
+        "question": "Das Essen schmeckt ___ (вкусно)",
+        "options": [
+            "gut",
+            "gute",
+            "guten",
+            "guter"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 21,
+        "level": "B1",
+        "question": "Ich freue mich ___ die Reise (радуюсь предстоящей поездке)",
+        "options": [
+            "für",
+            "über",
+            "auf",
+            "an"
+        ],
+        "correct_index": 2
+    },
+    {
+        "id": 22,
+        "level": "B1",
+        "question": "Das ist der Mann, ___ ich gestern gesehen habe",
+        "options": [
+            "der",
+            "den",
+            "dem",
+            "dessen"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 23,
+        "level": "B1",
+        "question": "Wenn ich Zeit ___, würde ich dich besuchen",
+        "options": [
+            "habe",
+            "hätte",
+            "hatte",
+            "haben würde"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 24,
+        "level": "B1",
+        "question": "Ich habe ihn gebeten, mir ___ helfen",
+        "options": [
+            "zu",
+            "zu haben",
+            "-",
+            "dass"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 25,
+        "level": "B1",
+        "question": "Nachdem ich ___ hatte, ging ich schlafen",
+        "options": [
+            "esse",
+            "aß",
+            "gegessen",
+            "essen"
+        ],
+        "correct_index": 2
+    },
+    {
+        "id": 26,
+        "level": "B1",
+        "question": "___ es regnet, gehe ich spazieren",
+        "options": [
+            "Wenn",
+            "Weil",
+            "Obwohl",
+            "Dass"
+        ],
+        "correct_index": 2
+    },
+    {
+        "id": 27,
+        "level": "B1",
+        "question": "Das Buch, ___ Autor berühmt ist...",
+        "options": [
+            "der",
+            "den",
+            "dem",
+            "dessen"
+        ],
+        "correct_index": 3
+    },
+    {
+        "id": 28,
+        "level": "B1",
+        "question": "Je mehr ich lerne, ___ besser verstehe ich",
+        "options": [
+            "desto",
+            "als",
+            "wie",
+            "so"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 29,
+        "level": "B1",
+        "question": "Ich lasse mein Auto ___",
+        "options": [
+            "reparieren",
+            "zu reparieren",
+            "repariert",
+            "repariere"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 30,
+        "level": "B1",
+        "question": "Er tut so, ___ er alles wüsste",
+        "options": [
+            "wenn",
+            "als ob",
+            "dass",
+            "weil"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 31,
+        "level": "B2",
+        "question": "Das Buch ist ___ interessant ___ spannend",
+        "options": [
+            "nicht nur... sondern auch",
+            "weder... noch",
+            "entweder... oder",
+            "sowohl... als auch"
+        ],
+        "correct_index": 3
+    },
+    {
+        "id": 32,
+        "level": "B2",
+        "question": "Anstatt ___ arbeiten, spielt er",
+        "options": [
+            "zu",
+            "dass",
+            "-",
+            "um zu"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 33,
+        "level": "B2",
+        "question": "Die Aufgabe ist kaum ___ lösen",
+        "options": [
+            "zu",
+            "zu haben",
+            "-",
+            "dass"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 34,
+        "level": "B2",
+        "question": "Er scheint die Wahrheit ___ haben",
+        "options": [
+            "gewusst zu",
+            "zu wissen",
+            "wissen zu",
+            "gewusst"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 35,
+        "level": "B2",
+        "question": "Das Projekt wurde von uns ___",
+        "options": [
+            "durchgeführt",
+            "durchführen",
+            "durchzuführen",
+            "durchführte"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 36,
+        "level": "B2",
+        "question": "Trotz ___ Wetters gingen wir spazieren",
+        "options": [
+            "schlechten",
+            "schlechtes",
+            "schlechtem",
+            "schlecht"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 37,
+        "level": "B2",
+        "question": "Er spielt Klavier, ___ er Musiker wäre",
+        "options": [
+            "wenn",
+            "als ob",
+            "dass",
+            "weil"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 38,
+        "level": "B2",
+        "question": "Indem ich viel lese, ___ ich mein Deutsch",
+        "options": [
+            "verbessere",
+            "zu verbessern",
+            "verbessern",
+            "verbessert"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 39,
+        "level": "B2",
+        "question": "Das Haus, ___ Dach rot ist...",
+        "options": [
+            "der",
+            "dessen",
+            "deren",
+            "dem"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 40,
+        "level": "B2",
+        "question": "Hätte ich das gewusst, ___ ich nicht gekommen",
+        "options": [
+            "wäre",
+            "hätte",
+            "würde",
+            "bin"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 41,
+        "level": "C1",
+        "question": "Die Entscheidung war ___ getroffen worden",
+        "options": [
+            "bereits",
+            "schon",
+            "erst",
+            "nur"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 42,
+        "level": "C1",
+        "question": "Es sei denn, du ___ anders",
+        "options": [
+            "entscheidest",
+            "entscheiden würdest",
+            "entscheidest würdest",
+            "entscheiden"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 43,
+        "level": "C1",
+        "question": "Der Vertrag bedarf ___ Unterschrift",
+        "options": [
+            "der",
+            "die",
+            "einer",
+            "eine"
+        ],
+        "correct_index": 2
+    },
+    {
+        "id": 44,
+        "level": "C1",
+        "question": "Ungeachtet ___ Tatsache, dass...",
+        "options": [
+            "der",
+            "die",
+            "das",
+            "den"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 45,
+        "level": "C1",
+        "question": "Die Verhandlungen verliefen ___ (успешно)",
+        "options": [
+            "gut",
+            "erfolgreich",
+            "positiv",
+            "alle варианты"
+        ],
+        "correct_index": 1
+    },
+    {
+        "id": 46,
+        "level": "C1",
+        "question": "Sofern keine Einwände erhoben werden, ___",
+        "options": [
+            "beginnen wir",
+            "wir beginnen",
+            "beginnt",
+            "anfangen wir"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 47,
+        "level": "C1",
+        "question": "Es handelt sich hierbei ___ ein Missverständnis",
+        "options": [
+            "für",
+            "über",
+            "um",
+            "an"
+        ],
+        "correct_index": 2
+    },
+    {
+        "id": 48,
+        "level": "C1",
+        "question": "Dem Anschein ___ hat er Recht",
+        "options": [
+            "nach",
+            "zu",
+            "für",
+            "über"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 49,
+        "level": "C1",
+        "question": "Dessen ungeachtet bleibt die Tatsache ___",
+        "options": [
+            "bestehen",
+            "zu bestehen",
+            "bestanden",
+            "bestehend"
+        ],
+        "correct_index": 0
+    },
+    {
+        "id": 50,
+        "level": "C1",
+        "question": "Mittels moderner Technologie lässt sich das Problem ___",
+        "options": [
+            "lösen",
+            "gelöst",
+            "zu lösen",
+            "lösend"
+        ],
+        "correct_index": 0
+    }
+]

@@ -1,0 +1,150 @@
+/**
+ * Глобальные стили Mini App.
+ * Tailwind + Telegram CSS переменные.
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Telegram Theme CSS Variables (fallbacks) */
+:root {
+  --tg-theme-bg-color: #ffffff;
+  --tg-theme-text-color: #000000;
+  --tg-theme-hint-color: #999999;
+  --tg-theme-link-color: #2481cc;
+  --tg-theme-button-color: #2481cc;
+  --tg-theme-button-text-color: #ffffff;
+  --tg-theme-secondary-bg-color: #f0f0f0;
+
+  /* Aliases */
+  --tg-bg: var(--tg-theme-bg-color);
+  --tg-text: var(--tg-theme-text-color);
+  --tg-hint: var(--tg-theme-hint-color);
+  --tg-link: var(--tg-theme-link-color);
+  --tg-button: var(--tg-theme-button-color);
+  --tg-button-text: var(--tg-theme-button-text-color);
+  --tg-secondary-bg: var(--tg-theme-secondary-bg-color);
+}
+
+/* Dark theme overrides */
+.dark {
+  --tg-theme-bg-color: #1f1f1f;
+  --tg-theme-text-color: #ffffff;
+  --tg-theme-hint-color: #7d7d7d;
+  --tg-theme-link-color: #5eadff;
+  --tg-theme-button-color: #5eadff;
+  --tg-theme-button-text-color: #ffffff;
+  --tg-theme-secondary-bg-color: #2c2c2c;
+}
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Убираем синюю подсветку при тапе на iOS */
+input,
+button,
+textarea,
+select,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Плавный скролл */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--tg-theme-hint-color);
+  border-radius: 4px;
+}
+
+/* Disable pull-to-refresh on touch devices */
+html,
+body {
+  overscroll-behavior: none;
+}
+
+/* Focus states */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+}
+
+/* Animations */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Utility classes */
+.text-tg-bg {
+  color: var(--tg-theme-bg-color);
+}
+
+.text-tg-text {
+  color: var(--tg-theme-text-color);
+}
+
+.text-tg-hint {
+  color: var(--tg-theme-hint-color);
+}
+
+.text-tg-link {
+  color: var(--tg-theme-link-color);
+}
+
+.text-tg-button {
+  color: var(--tg-theme-button-color);
+}
+
+.bg-tg-bg {
+  background-color: var(--tg-theme-bg-color);
+}
+
+.bg-tg-text {
+  background-color: var(--tg-theme-text-color);
+}
+
+.bg-tg-button {
+  background-color: var(--tg-theme-button-color);
+}
+
+.bg-tg-secondary {
+  background-color: var(--tg-theme-secondary-bg-color);
+}
