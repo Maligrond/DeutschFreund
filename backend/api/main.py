@@ -136,7 +136,7 @@ async def health_check():
         "version": "1.0.0",
     }
 
-@app.get("/debug/db", tags=["System"])
+@app.get("/api/debug/db", tags=["System"])
 async def debug_db():
     """Test database connection."""
     try:
