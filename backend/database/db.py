@@ -41,22 +41,38 @@ if not DATABASE_URL:
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://", 1)
 
-# Fix for "TypeError: connect() got an unexpected keyword argument 'sslmode'"
-# asyncpg doesn't support 'sslmode' in URL query params, must be passed in connect_args or as 'ssl' context
+# Fix for "TypeError: unexpected keyword argument '...'"
+# asyncpg doesn't support 'sslmode', 'channel_binding', etc in URL query params.
 CONNECT_ARGS = {}
-if DATABASE_URL and "sslmode" in DATABASE_URL:
+if DATABASE_URL:
     try:
         url_parts = urllib.parse.urlparse(DATABASE_URL)
         qs = urllib.parse.parse_qs(url_parts.query)
-        # If sslmode is present, remove it from URL and enable SSL in connect_args
+        
+        # Params to strip from URL
+        UNSUPPORTED_PARAMS = {'sslmode', 'channel_binding', 'options'}
+        
+        modified = False
+        
+        # Handle sslmode specifically
         if 'sslmode' in qs:
-            sslmode_val = qs.pop('sslmode')[0]
+            sslmode_val = qs['sslmode'][0]
             if sslmode_val == 'require':
                 CONNECT_ARGS['ssl'] = 'require'
+            elif sslmode_val == 'disable':
+                 CONNECT_ARGS['ssl'] = False
+            modified = True
             
-            # Rebuild URL without sslmode
+        # Remove all unsupported params
+        for param in UNSUPPORTED_PARAMS:
+            if param in qs:
+                qs.pop(param)
+                modified = True
+        
+        if modified:
             new_query = urllib.parse.urlencode(qs, doseq=True)
             DATABASE_URL = urllib.parse.urlunparse(url_parts._replace(query=new_query))
+            
     except Exception as e:
         logger.error(f"Failed to parse or fix DATABASE_URL: {e}")
 
