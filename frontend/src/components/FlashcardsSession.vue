@@ -10,6 +10,12 @@
       <div class="text-[60px] mb-4">🎉</div>
       <h2 class="text-xl font-bold text-tg-text mb-2">Всё повторено!</h2>
       <p class="text-tg-hint">На сегодня слов для повторения нет.</p>
+      
+      <!-- Debug Info -->
+      <div class="mt-4 p-2 bg-red-100 text-red-800 text-xs rounded opacity-50">
+         DEBUG: UserID: {{ userId || 'None' }}
+      </div>
+
       <button @click="$router.push('/')" class="mt-8 bg-tg-button text-white px-6 py-3 rounded-xl font-medium">
         На главную
       </button>
@@ -73,7 +79,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useTelegram } from '../composables/useTelegram';
 import { useApi, type VocabularyItem } from '../composables/useApi';
 
-const { hapticFeedback } = useTelegram();
+const { hapticFeedback, userId } = useTelegram();
 const { api } = useApi();
 
 const loading = ref(true);
