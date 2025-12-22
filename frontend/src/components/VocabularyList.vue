@@ -1,9 +1,6 @@
 <template>
-  <div class="min-h-screen bg-tg-secondary pb-24">
-    <!-- Header -->
-    <div class="px-4 pt-4 pb-2 bg-tg-secondary sticky top-0 z-10 backdrop-blur-md bg-opacity-90">
-      <h1 class="text-[34px] font-bold text-tg-text tracking-tight leading-tight">Словарь</h1>
-    </div>
+  <div class="pb-4">
+
 
     <div v-if="loading" class="flex items-center justify-center py-20">
       <div class="w-6 h-6 border-2 border-tg-hint border-t-tg-button rounded-full animate-spin"></div>

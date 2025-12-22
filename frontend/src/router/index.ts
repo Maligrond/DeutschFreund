@@ -38,8 +38,8 @@ const router = createRouter({
         {
             path: '/vocabulary',
             name: 'vocabulary',
-            component: () => import('../views/VocabularyView.vue'),
-            meta: { title: 'Мой словарь' }
+            component: () => import('../views/VocabularyContainer.vue'),
+            meta: { title: 'Словарь' }
         },
         {
             path: '/streak',
@@ -47,11 +47,10 @@ const router = createRouter({
             component: () => import('../views/StreakView.vue'),
             meta: { title: 'Streak' }
         },
+        // Flashcards is now a tab inside Vocabulary
         {
             path: '/flashcards',
-            name: 'flashcards',
-            component: () => import('../views/FlashcardsView.vue'),
-            meta: { title: 'Карточки' }
+            redirect: '/vocabulary'
         },
         {
             path: '/leaderboard',

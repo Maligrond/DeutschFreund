@@ -88,7 +88,7 @@
           <!-- Item 3: Flashcards -->
           <div 
             class="pl-4 pr-3 py-3 flex items-center bg-tg-bg active:bg-tg-secondary transition-colors cursor-pointer border-b-[0.5px] border-tg-separator"
-            @click="$router.push('/flashcards')"
+            @click="$router.push('/vocabulary?tab=cards')"
           >
             <div class="w-[29px] h-[29px] rounded-[7px] bg-purple-500 flex items-center justify-center text-white text-[18px] mr-3 flex-shrink-0">
               🗂️

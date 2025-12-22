@@ -52,7 +52,7 @@ import { useTelegram } from '@/composables/useTelegram'
 
 const route = useRoute()
 const api = useApi()
-const { close, hapticFeedback } = useTelegram()
+const { userId, close, hapticFeedback } = useTelegram()
 
 const words = ref<string[]>([])
 const selectedWord = ref('')
@@ -74,7 +74,7 @@ onMounted(async () => {
 
 function selectWord(word: string) {
   if (!word.trim() || /^\s+$/.test(word)) return
-  hapticFeedback('selection')
+  hapticFeedback?.('selection')
   selectedWord.value = word.replace(/[.,!?;:()]/g, '')
   wordTranslation.value = '...'
   api.translateWord(messageId.value, selectedWord.value).then(res => wordTranslation.value = res?.translation || '')
@@ -87,10 +87,18 @@ function speak(text: string) {
 }
 
 async function addToFavorites() {
-  if (!selectedWord.value) return
-  hapticFeedback('success')
-  await api.addToFavorites(12345, selectedWord.value, wordTranslation.value, messageText.value) // userId mocked or from store
-  clearSelection()
+  if (!selectedWord.value || !userId.value) return
+  
+  try {
+    hapticFeedback?.('medium')
+    await api.addToFavorites(userId.value, selectedWord.value, wordTranslation.value, messageText.value)
+    hapticFeedback?.('success')
+    // Show a small toast or just close the sheet? For now just close.
+    clearSelection()
+  } catch (e) {
+    console.error('Failed to add to favorites', e)
+    hapticFeedback?.('error')
+  }
 }
 </script>
 
