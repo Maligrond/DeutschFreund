@@ -656,6 +656,7 @@ export function useApi() {
         addToFavorites,
         getFavorites,
         toggleLearned,
+        resetWordProgress,
 
         async getDueFlashcards(limit: number = 15): Promise<VocabularyResponse> {
             const { userId } = useTelegram();
