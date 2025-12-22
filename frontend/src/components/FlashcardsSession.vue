@@ -9,13 +9,6 @@
     <div v-else-if="cards.length === 0" class="px-4 text-center py-20">
       <div class="text-[60px] mb-4">🎉</div>
       <h2 class="text-xl font-bold text-tg-text mb-2">Всё повторено!</h2>
-      <p class="text-tg-hint">На сегодня слов для повторения нет.</p>
-      
-      <!-- Debug Info -->
-      <div class="mt-4 p-2 bg-red-100 text-red-800 text-xs rounded opacity-50">
-         DEBUG: UserID: {{ userId || 'None' }}
-      </div>
-
       <button @click="$router.push('/')" class="mt-8 bg-tg-button text-white px-6 py-3 rounded-xl font-medium">
         На главную
       </button>
@@ -102,9 +95,11 @@ onMounted(async () => {
 });
 
 const loadCards = async () => {
+  if (!userId.value) return;
+  
   loading.value = true;
   try {
-    const data = await api.getDueFlashcards(15);
+    const data = await api.getDueFlashcards(userId.value, 15);
     cards.value = data.words;
     totalCount.value = data.words.length;
   } catch (e) {

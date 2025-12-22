@@ -658,10 +658,8 @@ export function useApi() {
         toggleLearned,
         resetWordProgress,
 
-        async getDueFlashcards(limit: number = 15): Promise<VocabularyResponse> {
-            const { userId } = useTelegram();
-            if (!userId.value) throw new Error('User not found');
-            const response = await api.get(`/api/vocabulary/review`, { params: { user_id: userId.value, limit } });
+        async getDueFlashcards(userId: number, limit: number = 15): Promise<VocabularyResponse> {
+            const response = await api.get(`/api/vocabulary/review`, { params: { user_id: userId, limit } });
             return response.data;
         },
 
