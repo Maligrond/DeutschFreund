@@ -7,7 +7,11 @@
     </div>
 
     <div v-if="loading" class="flex flex-col items-center justify-center py-20">
-      <div class="w-6 h-6 border-2 border-tg-hint border-t-tg-button rounded-full animate-spin"></div>
+      <div class="w-6 h-6 border-2 border-tg-hint border-t-tg-button rounded-full animate-spin mb-4"></div>
+      <p v-if="showLongLoadingMessage" class="text-tg-hint text-sm animate-pulse text-center px-4">
+        Ожидание сервера... 😴<br>
+        (Первая загрузка может занять 5-10 сек)
+      </p>
     </div>
 
     <template v-else>
@@ -150,6 +154,7 @@ const stats = ref<StatsResponse>({
 })
 
 const loading = ref(true)
+const showLongLoadingMessage = ref(false)
 
 const progressPercent = computed(() => {
   // Use the calculated percent from backend
@@ -157,10 +162,19 @@ const progressPercent = computed(() => {
 })
 
 onMounted(async () => {
+  // Show "Long Loading" message if it takes > 2 seconds
+  const timer = setTimeout(() => {
+    if (loading.value) {
+      showLongLoadingMessage.value = true
+    }
+  }, 2000)
+
   if (userId.value) {
     const data = await api.getUserStats(userId.value)
     if (data) stats.value = data
   }
+  
+  clearTimeout(timer)
   loading.value = false
 })
 
