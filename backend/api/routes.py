@@ -596,10 +596,42 @@ async def add_to_favorites(
             word_ru=request.word_ru,
             times_seen=1,
             learned=False,
+            next_review=datetime.now(timezone.utc)  # Explicitly set to now
         )
         session.add(new_word)
         await session.commit()
         return UpdateResponse(status="added", message=f"Word '{request.word_de}' added to favorites")
+
+
+@router.post(
+    "/vocabulary/{word_id}/reset",
+    response_model=UpdateResponse,
+    responses={404: {"model": ErrorResponse}},
+    summary="Сбросить прогресс и отправить на повторение",
+    tags=["Vocabulary"]
+)
+async def reset_word_progress(
+    word_id: int = Path(..., description="ID слова"),
+    session: AsyncSession = Depends(get_session)
+) -> UpdateResponse:
+    """
+    Сбрасывает прогресс слова (уровень 0) и ставит next_review на сейчас.
+    Позволяет пользователю принудительно добавить слово в карточки.
+    """
+    word = await session.get(Vocabulary, word_id)
+    
+    if not word:
+        raise HTTPException(status_code=404, detail="Word not found")
+    
+    word.learned = False
+    word.times_seen = 0
+    word.interval = 0
+    word.ease_factor = 2.5
+    word.next_review = datetime.now(timezone.utc)
+    
+    await session.commit()
+    
+    return UpdateResponse(status="ok", message="Word reset for review")
 
 
 @router.get(

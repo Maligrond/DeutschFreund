@@ -367,6 +367,17 @@ export function useApi() {
     }
 
     /**
+     * Сбросить прогресс слова (Study Now).
+     */
+    async function resetWordProgress(wordId: number): Promise<boolean> {
+        const result = await apiCall(async () => {
+            await api.post(`/api/vocabulary/${wordId}/reset`)
+            return true
+        })
+        return result === true
+    }
+
+    /**
      * Получить статистику произношения за период.
      */
     async function getPronunciationStats(

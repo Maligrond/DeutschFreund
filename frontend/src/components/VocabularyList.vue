@@ -48,6 +48,15 @@
                <p class="text-[15px] text-tg-hint truncate">{{ word.word_ru }}</p>
             </div>
 
+            <!-- Reset / Study Now -->
+            <button 
+              v-if="word.learned || word.times_seen > 0"
+              @click.stop="resetWord(word)"
+              class="w-[44px] h-[44px] flex items-center justify-center mr-1"
+            >
+               <span class="material-icons-round text-tg-hint text-[20px] opacity-50 hover:opacity-100">restart_alt</span>
+            </button>
+
             <!-- Checkbox -->
             <button 
               @click.stop="toggleLearned(word)"
@@ -93,6 +102,16 @@ async function toggleLearned(word: VocabularyItem) {
   hapticFeedback?.('selection')
   await api.toggleLearned(word.id)
   word.learned = !word.learned
+}
+
+async function resetWord(word: VocabularyItem) {
+  hapticFeedback?.('medium')
+  await api.resetWordProgress(word.id)
+  // Optimistic update
+  word.learned = false
+  word.times_seen = 0
+  // Optional: Switch to cards tab automatically? 
+  // For now just show feedback
 }
 
 function speak(text: string) {
