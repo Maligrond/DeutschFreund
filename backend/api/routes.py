@@ -749,6 +749,47 @@ async def get_due_flashcards(
     )
 
 
+@router.get(
+    "/debug/vocabulary/{user_id}",
+    summary="[DEBUG] Dump all vocabulary for a user",
+    tags=["Debug"]
+)
+async def debug_vocabulary(
+    user_id: int = Path(..., description="User ID"),
+    session: AsyncSession = Depends(get_session)
+):
+    """
+    TEMPORARY DEBUG ENDPOINT.
+    Returns raw vocabulary data to diagnose flashcard issues.
+    """
+    now = datetime.now(timezone.utc)
+    
+    result = await session.execute(
+        select(Vocabulary).where(Vocabulary.user_id == user_id)
+    )
+    words = result.scalars().all()
+    
+    return {
+        "user_id": user_id,
+        "current_time_utc": now.isoformat(),
+        "total_words": len(words),
+        "words": [
+            {
+                "id": w.id,
+                "word_de": w.word_de,
+                "word_ru": w.word_ru,
+                "next_review": w.next_review.isoformat() if w.next_review else None,
+                "is_due": w.next_review is None or w.next_review <= now,
+                "learned": w.learned,
+                "interval": w.interval,
+                "ease_factor": w.ease_factor,
+                "created_at": w.created_at.isoformat(),
+            }
+            for w in words
+        ]
+    }
+
+
 @router.post(
     "/vocabulary/review/{word_id}",
     response_model=UpdateResponse,
