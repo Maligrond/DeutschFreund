@@ -73,7 +73,7 @@ import { useTelegram } from '../composables/useTelegram';
 import { useApi, type VocabularyItem } from '../composables/useApi';
 
 const { hapticFeedback, userId } = useTelegram();
-const { api } = useApi();
+const { getDueFlashcards, submitFlashcardReview } = useApi();
 
 const loading = ref(true);
 const cards = ref<VocabularyItem[]>([]);
@@ -99,7 +99,7 @@ const loadCards = async () => {
   
   loading.value = true;
   try {
-    const data = await api.getDueFlashcards(userId.value, 15);
+    const data = await getDueFlashcards(userId.value, 15);
     cards.value = data.words;
     totalCount.value = data.words.length;
   } catch (e) {
@@ -128,7 +128,7 @@ const rateCard = async (quality: number) => {
     isFlipped.value = false;
     
     // Send to API in background
-    await api.submitFlashcardReview(cardId, quality);
+    await submitFlashcardReview(cardId, quality);
     
     // If cards empty, we are done
     if (cards.value.length === 0) {
